@@ -1,5 +1,7 @@
 # airIQ
 
+> **🚧 Work In Progress:** This project is currently in the active development phase and is not yet complete. Features and integrations are subject to change.
+
 airIQ is a web application designed to predict the Air Quality Index (AQI) based on various air pollutant levels. The backend runs on Python and Flask, utilizing a machine learning model to serve real-time predictions.
 
 ## Features
