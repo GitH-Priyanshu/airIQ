@@ -1,127 +1,86 @@
-# airIQ
+# airIQ - Intelligence Air Quality Dashboard
 
-> **🚧 Work In Progress:** This project is currently in the active development phase and is not yet complete. Features and integrations are subject to change.
+> **🚀 Complete Environmental Intelligence:** airIQ is no longer just a predictor; it's a comprehensive platform for real-time air quality monitoring, predictive simulation, and comparative analytics.
 
-airIQ is a full-stack web application engineered to predict the Air Quality Index (AQI) based on real-time air pollutant data. The architecture integrates a dynamic frontend, a Flask-based REST API backend, and an advanced ensemble machine learning pipeline to deliver highly accurate, low-latency predictions.
+airIQ is a full-stack environmental intelligence platform engineered to monitor and predict the Air Quality Index (AQI) using advanced ensemble machine learning. The architecture integrates a responsive frontend, a Flask-based REST API, and a 6-feature hybrid ML pipeline to deliver high-precision environmental insights.
 
-## 🚀 Features & Architecture
+## 🚀 Key Modules & Features
 
-### Backend & Real-Time Pipeline
-- **Flask REST API:** The backend is powered by Flask, ensuring lightweight and rapid request handling.
-- **On-Startup Training Pipeline:** Upon server startup (`initialize_ml_models()`), the system dynamically trains multiple algorithms, calculates live evaluation metrics, and loads the primary production model into memory.
-- **RESTful Endpoints:**
-  - `/api/predict`: A POST route that consumes real-time pollutant parameters (`CO`, `NO2`, `OZONE`, `PM10`) from the user and passes them to the Gradient Boosting model for instant AQI inference.
-  - `/api/metrics`: Exposes the model's evaluation metrics and scatter plot data to visually demonstrate accuracy on the frontend.
+### 1. 🔮 AI Prediction & What-If Simulation
+- **6-Feature Inference:** Predicts AQI using real-time inputs for `CO`, `NH3`, `NO2`, `OZONE`, `PM10`, and `SO2`.
+- **What-If Analysis:** Interactive sliders allow users to simulate how varying pollutant levels impact the overall AQI and health categories.
+- **Model Comparison:** Live-compare predictions across 6+ different algorithms (Linear, Random Forest, Gradient Boosting, etc.) to see model variance.
 
-### Frontend Integration
-- **Interactive UI:** Users can dynamically adjust pollutant levels via interactive sliders.
-- **Asynchronous Inference:** Utilizing the JavaScript `fetch()` API, the frontend interacts with the backend to deliver real-time AQI predictions and categorical status (e.g., Good, Severe) without requiring page reloads.
-- **Data Visualization:** Employs dynamic charts to visualize actual vs. predicted model performance.
+### 2. 🌍 Live Tracker & National Network
+- **Real-Time API Sync:** Integrates with the **WAQI (World Air Quality Index) API** to fetch live pollution data from thousands of stations across India.
+- **Parallel Processing:** Uses Python's `ThreadPoolExecutor` for high-concurrency API requests, ensuring low-latency data fetching.
+- **National Leaderboard:** Automatically ranks the Top 5 Cleanest and Top 5 Most Polluted cities in real-time.
 
-## 📊 Dataset Analysis
+### 3. 🗺️ Geographical Intelligence
+- **Data-Driven Heatmap:** A Folium-powered visualization that maps actual vs. predicted pollution levels across 260+ Indian cities.
+- **City Comparison:** Side-by-side analytical breakdown of pollutant concentrations between any two selected cities.
 
-**Target Variable:**
-*   **AQI (Air Quality Index)** → Regression problem
+### 4. 🚲 Commute Safety Optimizer
+- **Exposure Calculation:** Calculates a safety score for commuters based on their route (Start/End city) and mode of transport (Walking, Cycling, Car, etc.).
+- **Health Advice:** Provides actionable health recommendations based on simulated pollutant exposure during transit.
 
-**Input Features:**
-*   `CO` (Carbon Monoxide)
-*   `NO2` (Nitrogen Dioxide)
-*   `OZONE` (O₃)
-*   `PM10` (Particulate Matter)
+## 🧠 Machine Learning Pipeline
 
-**Feature Type:**
-*   All features are strictly numerical.
+### 1. The 6-Feature Dataset
+The model has been upgraded from a 4-feature to a **6-feature input vector** for superior chemical sensitivity:
+- **Primary Features:** `PM10`, `OZONE`, `NO2`, `CO`.
+- **New Additions:** `NH3` (Ammonia) and `SO2` (Sulfur Dioxide) for better urban industrial monitoring.
 
-**Insights:**
-*   `PM10` and `OZONE` are strong contributors to AQI spikes.
-*   `NO2` and `CO` contribute heavily to urban pollution trends.
+### 2. The 0.95 Milestone Hybrid Model
+To achieve industry-leading accuracy (R² > 0.95), we implemented a **Super-Ensemble Hybrid Model**:
+- **Composition:** 
+  - **40% Hist Gradient Boosting** (Excellent for large-scale non-linear data)
+  - **30% Extra Trees Regressor** (Highly randomized for variance reduction)
+  - **30% Random Forest** (Robust baseline ensemble)
+- **Impact:** This weighted architecture captures both subtle pollutant fluctuations and extreme industrial spikes more effectively than any single model.
 
-**Conclusion:**
-*   **Problem Type:** Regression
-*   **Goal:** Predict continuous AQI value and programmatically map it to an AQI category (Good, Moderate, Severe, etc.).
+### 3. Live Analytics
+- **Performance Benchmarking:** Real-time calculation of MAE, RMSE, and R² scores on server startup.
+- **Visual Validation:** Dynamic scatter plots showing "Actual vs. Predicted" values for immediate scientific verification.
 
-## ⚙️ Data Preprocessing & Training Pipeline
-The data engineering flow follows a strict logical pipeline: `Data Extraction` → `Preprocessing` → `Training` → `Evaluation` → `Deployment`.
+## 🛠️ Tech Stack
+- **Backend:** Flask (Python), Scikit-Learn, Pandas, NumPy, Joblib.
+- **Frontend:** HTML5, CSS3 (Glassmorphic Design), Vanilla JavaScript.
+- **Visuals:** Chart.js (Analytics), Folium (Geospatial), FontAwesome.
+- **Data:** WAQI REST API, CPCB Static Dataset.
 
-1. **Handling Missing Values**: Applied time-series interpolation to maintain chronological continuity, with median imputation serving as a fallback for naturally right-skewed pollutant variables.
-2. **Outlier Winsorization**: Capped physically anomalous spikes using an expanded `3.0 * IQR` bound to preserve legitimate extreme pollution events (common in environmental data) without blindly deleting rows.
-3. **Pivoting & Target Engineering**: Reshaped the time-series data into a wide feature matrix and synthesized the `AQI` target variable by extracting the maximum sub-index across present pollutants.
-4. **Standardization & Splitting**: Scaled numerical features using `StandardScaler` (Z-score normalization) to guarantee optimal convergence. Data was split 80/20 chronologically to completely prevent temporal data leakage.
+## ⚙️ Installation & Setup
 
-## 🧠 Machine Learning Models
-
-### 1. The Algorithms Evaluated
-To ensure the highest scientific rigor, multiple algorithms were evaluated:
-- **Linear Regression (Baseline):** Serves as our mathematical floor. It successfully captures broad linear trends but inherently struggles to model non-linear, extreme pollution spikes.
-- **Random Forest Regressor:** An ensemble of independent decision trees that effectively manages variance and models complex interactions.
-- **AdaBoost Regressor:** A sequential ensemble that explicitly penalizes and attempts to correct the errors of its predecessors.
-- **Gradient Boosting Regressor (Primary Production Model):** A highly optimized sequential ensemble that minimizes the loss function using gradient descent. 
-
-### 2. The Hybrid Model (Ensemble Blending)
-To push predictive boundaries, an advanced **Hybrid Ensemble Model** was engineered. 
-- **The Concept:** It actively combines the predictions of the linear baseline (Linear Regression) and the non-linear champion (Gradient Boosting) to capture both broad trends and complex spikes.
-- **The Execution:** We evaluated both a **Simple Average (50/50)** and a mathematically optimized **Weighted Average (e.g., 20% LR + 80% GBR)** based on validation data.
-- **The Impact:** The Hybrid approach successfully proved that bridging linear stability with non-linear variance is incredibly powerful (jumping from 78% to 96% accuracy). However, it ultimately demonstrated that blending a linear model slightly drags down the pure non-linear Gradient Boosting model on this specific dataset.
-
-### 3. Evaluation Metrics Explained
-All models are strictly evaluated against three standard mathematical benchmarks:
-- **MAE (Mean Absolute Error):** Represents the average absolute point difference between the predicted and actual AQI. Provides simple interpretability (e.g., "Off by ±5 AQI").
-- **RMSE (Root Mean Squared Error):** Heavily penalizes massive, dangerous prediction errors (e.g., predicting "Good" when the air is actually "Severe"). This is critical for health-based warning systems.
-- **R² Score:** The "Accuracy Percentage." Indicates the percentage of AQI variance successfully explained by the model's chemical features.
-
-### 🏆 Final Model Selection
-**Gradient Boosting Regressor** was selected as the final production model deployed to the Flask backend. 
-*   **Justification:** Environmental data is highly complex. AQI is often driven by extreme, sudden chemical spikes (especially `PM10` and `OZONE`). Gradient Boosting overwhelmingly defeated the linear baseline and outperformed the Hybrid model by achieving the lowest RMSE and the highest R² (>97%), proving it is the safest, most robust algorithm to capture non-linear pollution patterns.
-
-## 🛠️ Getting Started
-
-### Prerequisites
-- Python 3.8+
-- Dependencies listed in `requirements.txt`
-
-### Installation
-1. Clone this repository:
+1. **Clone & Environment:**
    ```bash
    git clone https://github.com/GitH-Priyanshu/airIQ.git
    cd airIQ
-   ```
-
-2. Create a virtual environment and activate it (optional but recommended):
-   ```bash
    python -m venv venv
-   
-   # On Windows:
-   venv\Scripts\activate
-   
-   # On macOS/Linux:
-   source venv/bin/activate
+   source venv/bin/activate  # venv\Scripts\activate on Windows
    ```
 
-3. Install the dependencies:
+2. **Dependencies:**
    ```bash
    pip install -r requirements.txt
    ```
 
-4. Run the Flask application:
+3. **WAQI API Token:**
+   - Get a free token from [aqicn.org](https://aqicn.org/data-platform/token/).
+   - Update `WAQI_TOKEN` in `app.py`.
+
+4. **Launch:**
    ```bash
    python app.py
    ```
-
-5. Open your web browser and navigate to `http://localhost:5000` to interact with the application.
+   Navigate to `http://localhost:5000` (or the port specified in `app.py`).
 
 ## 📁 Project Structure
-- `app.py`: The main Flask application entry point.
-- `models/`: Contains the pre-trained machine learning models.
-- `notebooks/`: Jupyter notebooks used for data analysis and model training.
-- `scripts/`: Python scripts for data processing.
-- `static/`: Static assets (CSS, JS) for the web interface.
-- `templates/`: HTML templates for the web interface.
-- `data/`: Datasets used for training the models.
-
-## 🚀 Future Work
-- Add a heatmap visualization for geographical AQI monitoring.
-- Integrate real-time API data for live predictions.
-- Refine the UI/UX design.
+- `app.py`: Core REST API & ML Orchestrator.
+- `static/js/`: Modular JS (api.js, ui.js, charts.js, map.js, comparison.js).
+- `templates/`: Feature-specific views (live_tracker, analytics, commute, etc.).
+- `data/`: Cleaned environmental datasets.
+- `VIVA_NOTES.md`: Prepared technical questions and answers for project defense.
 
 ## 👨‍💻 Author
-Priyanshu
+**Priyanshu**
+- *Environmental Data Science & Full-Stack Development*
