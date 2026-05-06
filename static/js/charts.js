@@ -1,7 +1,7 @@
 // static/js/charts.js
 
 // Set global Chart.js defaults
-Chart.defaults.color = '#8b949e';
+Chart.defaults.color = '#adb5bd';
 Chart.defaults.font.family = "'Poppins', sans-serif";
 
 let scatterChartInstance = null;
@@ -24,17 +24,19 @@ export function renderScatterChart(scatterData) {
                     backgroundColor: '#BA68C8',
                     borderColor: 'rgba(186, 104, 200, 0.8)',
                     pointRadius: 5,
-                    pointHoverRadius: 7
+                    pointHoverRadius: 7,
+                    order: 1 // Draw behind the line
                 },
                 {
                     label: 'Perfect Prediction',
                     data: [{x: 0, y: 0}, {x: 450, y: 450}],
                     type: 'line',
-                    borderColor: '#4CAF50',
-                    borderWidth: 2,
-                    borderDash: [5, 5],
+                    borderColor: '#00FF41', // Matrix Green (very visible)
+                    borderWidth: 3,
+                    borderDash: [10, 5],
                     fill: false,
-                    pointRadius: 0
+                    pointRadius: 0,
+                    order: 0 // Draw on top
                 }
             ]
         },

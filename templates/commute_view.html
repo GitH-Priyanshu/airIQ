@@ -62,10 +62,6 @@
                     </div>
                     
                     <div id="commuteResultCard" class="d-none h-100 p-5 rounded-4 border shadow-lg overflow-hidden position-relative">
-                        <div class="position-absolute top-50 end-0 translate-middle-y pe-4 opacity-10" style="z-index: 0;">
-                            <i class="fa-solid fa-shield-virus" id="statusIconBg" style="font-size: 10rem;"></i>
-                        </div>
-                        
                         <div class="position-relative" style="z-index: 1;">
                             <div class="row align-items-center mb-5">
                                 <div class="col-sm-7">
@@ -87,7 +83,7 @@
                             
                             <hr class="border-secondary opacity-25 my-4">
                             
-                            <div class="d-flex align-items-start bg-dark bg-opacity-50 p-4 rounded-4 border border-info border-opacity-10">
+                            <div class="d-flex align-items-start bg-dark bg-opacity-50 p-4 rounded-4 border border-info border-opacity-10 mb-4">
                                 <div class="icon-box bg-info bg-opacity-20 text-info me-3 rounded-circle">
                                     <i class="fa-solid fa-hand-holding-medical"></i>
                                 </div>
@@ -95,6 +91,11 @@
                                     <h6 class="fw-bold text-info mb-1">Health Recommendation</h6>
                                     <p class="mb-0 text-white-50 small" id="resultAdvice">Calculate to see advice.</p>
                                 </div>
+                            </div>
+
+                            <!-- Repositioned Icon (Below Recommendation) -->
+                            <div class="text-center opacity-25 mt-4">
+                                <i class="fa-solid fa-shield-virus" id="statusIconBg" style="font-size: 6rem;"></i>
                             </div>
                         </div>
                     </div>

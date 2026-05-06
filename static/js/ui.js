@@ -14,11 +14,10 @@ export function populateMetricsTable(metrics) {
     metrics.forEach(m => {
         const tr = document.createElement('tr');
         if(m.is_best) {
-            tr.className = 'best-model-row';
-            tr.setAttribute('data-bs-toggle', 'tooltip');
-            tr.setAttribute('title', 'Dynamically selected based on lowest RMSE and highest R².');
+            tr.className = 'best-model-row bg-success bg-opacity-10';
             tr.innerHTML = `
-                <td class="fw-bold text-success"><i class="fa-solid fa-crown me-1"></i> ${m.name}</td>
+                <td class="fw-bold text-success"><i class="fa-solid fa-crown me-2"></i> ${m.name}</td>
+                <td class="text-center fw-bold font-monospace">${m.sample_prediction}</td>
                 <td class="text-center font-monospace">${m.mae}</td>
                 <td class="text-center font-monospace">${m.rmse}</td>
                 <td class="text-end pe-3 fw-bold text-success font-monospace">${m.r2} (Best)</td>
@@ -26,6 +25,7 @@ export function populateMetricsTable(metrics) {
         } else {
             tr.innerHTML = `
                 <td>${m.name}</td>
+                <td class="text-center font-monospace">${m.sample_prediction}</td>
                 <td class="text-center font-monospace">${m.mae}</td>
                 <td class="text-center font-monospace">${m.rmse}</td>
                 <td class="text-end pe-3 font-monospace">${m.r2}</td>
@@ -70,7 +70,7 @@ export function updateSimulationUI(data) {
 
     displayElem.innerHTML = `
         <div class="mb-2">Predicted AQI: <span class="counter-val">${simAqi}</span> <span class="fs-6 fw-normal ${colorClass}">(${catText})</span></div>
-        <div class="fs-6 ${modelNameColor}">Model Used: ${data.model_used} ${bestBadge}</div>
+        <div class="fs-6 text-secondary">Model: ${data.model_used}</div>
     `;
     
     // Trigger CSS transition
@@ -106,7 +106,7 @@ export function updateComparisonDashboard(comparisonData) {
         let badgeHTML = '';
 
         if (modelName === "Hybrid Model") {
-            modelDisplayName = `Hybrid Model (LR + GBR) <i class="fa-solid fa-circle-info ms-1 text-muted" data-bs-toggle="tooltip" title="Combines linear and non-linear models for better balance"></i>`;
+            modelDisplayName = `Hybrid Model (RF + ET + HGB) <i class="fa-solid fa-circle-info ms-1 text-muted" data-bs-toggle="tooltip" title="Combines Random Forest, Extra Trees, and Histogram Boosting for maximum precision"></i>`;
         }
 
         if (isBest) {
@@ -172,5 +172,69 @@ export function updateComparisonDashboard(comparisonData) {
             }
             rankingPanel.appendChild(li);
         });
+    }
+}
+
+export async function populateCities(...selects) {
+    try {
+        // Filter out null/undefined selects
+        const validSelects = selects.filter(s => s);
+        if (validSelects.length === 0) return;
+
+        const response = await fetch('/api/cities');
+        const json = await response.json();
+        
+        if (!json.success) throw new Error(json.error);
+        
+        const cities = json.cities;
+
+        validSelects.forEach(select => {
+            // Clear but keep placeholder
+            const placeholder = select.options[0]?.text || "Select City";
+            select.innerHTML = `<option value="" disabled selected>${placeholder}</option>`;
+            
+            cities.forEach(city => {
+                const opt = document.createElement('option');
+                opt.value = city;
+                opt.textContent = city;
+                select.appendChild(opt);
+            });
+        });
+        console.log(`Populated ${cities.length} cities.`);
+    } catch (err) {
+        console.error("Error populating cities:", err);
+    }
+}
+
+export function initTheme() {
+    const themeToggle = document.getElementById('themeToggle');
+    if (!themeToggle) return;
+
+    const html = document.documentElement;
+    const themeIcon = themeToggle.querySelector('i');
+    
+    // Check for saved theme
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    html.setAttribute('data-theme', savedTheme);
+    updateToggleIcon(savedTheme);
+
+    themeToggle.addEventListener('click', () => {
+        const currentTheme = html.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        html.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        updateToggleIcon(newTheme);
+    });
+
+    function updateToggleIcon(theme) {
+        if (!themeIcon) return;
+        if (theme === 'light') {
+            themeIcon.className = 'fa-solid fa-sun';
+            themeIcon.style.color = '#f59e0b';
+        } else {
+            themeIcon.className = 'fa-solid fa-moon';
+            themeIcon.style.color = '';
+        }
     }
 }

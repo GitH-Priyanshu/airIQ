@@ -12,7 +12,7 @@
                     <i class="fa-solid fa-swords fs-3"></i>
                 </div>
                 <div>
-                    <h2 class="fw-bold text-white mb-1">Pollutant Battle</h2>
+                    <h2 class="fw-bold text-white mb-1">City Battle</h2>
                     <p class="text-secondary mb-0">Compare real-time pollution metrics between two cities side-by-side.</p>
                 </div>
             </div>
@@ -23,6 +23,7 @@
                         <span class="badge bg-primary px-3 py-1 rounded-pill small">CITY A</span>
                     </div>
                     <select class="form-select bg-dark text-white border-0 glass-input p-3 rounded-4 city-select" id="compareCity1">
+                        <option value="" disabled selected>Select City A</option>
                         <!-- Populated via JS -->
                     </select>
                 </div>
@@ -38,6 +39,7 @@
                         <span class="badge bg-info px-3 py-1 rounded-pill small">CITY B</span>
                     </div>
                     <select class="form-select bg-dark text-white border-0 glass-input p-3 rounded-4 city-select" id="compareCity2">
+                        <option value="" disabled selected>Select City B</option>
                         <!-- Populated via JS -->
                     </select>
                 </div>
@@ -46,22 +48,11 @@
             <div class="chart-container bg-dark bg-opacity-25 p-4 rounded-4 border border-secondary border-opacity-10" style="height: 450px;">
                 <canvas id="comparisonBattleChart"></canvas>
             </div>
-            
-            <div class="mt-5 row g-4">
-                <div class="col-md-6">
-                    <div class="p-3 bg-primary bg-opacity-10 rounded-4 border border-primary border-opacity-10 text-center">
-                        <small class="text-primary fw-bold text-uppercase">Insight</small>
-                        <p class="text-white-50 mb-0 mt-1 small">Higher bars indicate higher concentration of specific pollutants.</p>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="p-3 bg-info bg-opacity-10 rounded-4 border border-info border-opacity-10 text-center">
-                        <small class="text-info fw-bold text-uppercase">Health Tip</small>
-                        <p class="text-white-50 mb-0 mt-1 small">PM2.5 and PM10 are the most critical factors for long-term health.</p>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </div>
+
+{% block scripts %}
+<script type="module" src="{{ url_for('static', filename='js/comparison.js') }}"></script>
+{% endblock %}
 {% endblock %}

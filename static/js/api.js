@@ -11,13 +11,12 @@ export async function fetchMetrics() {
     }
 }
 
-export async function simulateAQI(payload, modelName) {
+export async function simulateAQI(payload) {
     try {
-        const payloadWithModel = { ...payload, model: modelName };
-        const response = await fetch('/api/predict', {
+        const response = await fetch('/predict-aqi', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payloadWithModel)
+            body: JSON.stringify(payload)
         });
         if (!response.ok) throw new Error('Failed to predict AQI');
         return await response.json();

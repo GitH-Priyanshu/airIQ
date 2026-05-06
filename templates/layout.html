@@ -24,11 +24,20 @@
 </head>
 <body>
 
+    <!-- Environmental Background Layer -->
+    <div class="theme-bg" id="themeBg"></div>
+    <div class="theme-overlay"></div>
+
     <!-- Sidebar Navigation -->
     <div class="sidebar" id="sidebar">
-        <div class="sidebar-brand">
-            <i class="fa-solid fa-wind text-info fs-3"></i>
-            <span class="fw-bold text-white fs-4">AirIQ</span>
+        <div class="sidebar-brand d-flex align-items-center justify-content-between w-100 pe-3">
+            <div class="d-flex align-items-center">
+                <i class="fa-solid fa-wind text-info fs-3 me-2"></i>
+                <span class="fw-bold text-white fs-4">AirIQ</span>
+            </div>
+            <button class="theme-toggle-btn" id="themeToggle" title="Toggle Theme">
+                <i class="fa-solid fa-moon"></i>
+            </button>
         </div>
         
         <nav class="nav flex-column">
@@ -50,8 +59,11 @@
             <a class="nav-link {% if request.path == '/leaderboard-view' %}active{% endif %}" href="/leaderboard-view">
                 <i class="fa-solid fa-ranking-star"></i> Leaderboard
             </a>
+            <a class="nav-link {% if request.path == '/live-tracker' %}active{% endif %}" href="/live-tracker">
+                <i class="fa-solid fa-tower-broadcast"></i> Live Tracker
+            </a>
             <a class="nav-link {% if request.path == '/comparison-view' %}active{% endif %}" href="/comparison-view">
-                <i class="fa-solid fa-swords"></i> City Battle
+                <i class="fa-solid fa-shield-halved"></i> City Battle
             </a>
         </nav>
     </div>
